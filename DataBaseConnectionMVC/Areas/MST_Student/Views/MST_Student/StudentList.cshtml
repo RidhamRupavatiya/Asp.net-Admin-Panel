@@ -1,0 +1,152 @@
+﻿@using System.Data;
+@model DataTable
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["StudentInsertMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["StudentInsertMessage"]</div>
+}
+@if (TempData["StudentDelete"] != null)
+{
+    <div class="alert alert-success">@TempData["StudentDelete"]</div>
+}
+
+<form class="row align-items-end g-3 border border-2 rounded p-3 my-4" method="POST" asp-area="MST_Student" asp-controller="MST_Student" asp-action="StudentList" asp-route-filter="true">
+    <div class="col-12">
+        <h2>Filter</h2>
+        <hr />
+    </div>
+    <div class="col-md">
+        <label for="StudentName" class="form-label">Student Name</label>
+        <input type="text" name="StudentName" class="form-control" id="StudentName" placeholder="e.g. Abc">
+    </div>
+    <div class="col-md">
+        <label for="CityId" class="form-label">City Id</label>
+        <input type="text" name="CityId" class="form-control" id="CityId" placeholder="e.g. 1">
+    </div>
+    <div class="col-md">
+        <label for="BranchName" class="form-label">Branch Name</label>
+        <input type="text" name="BranchName" class="form-control" id="BranchName" placeholder="e.g. Computer Science">
+    </div>
+    <div class="col-md">
+        <label for="Email" class="form-label">Email</label>
+        <input type="text" name="Email" class="form-control" id="Email" placeholder="e.g. abc123@gmail">
+    </div>
+    <div class="col-md">
+        <button type="submit" title="Search" class="btn btn-success w-100">Search <i class="bi bi-search"></i></button>
+    </div>
+</form>
+
+<table>
+    <tr>
+        <td>
+            <a class="btn btn-primary" asp-controller="MST_Student" asp-action="AddStudent">Add Student</a>
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            Search : &nbsp;
+        </td>
+        <td>
+            <input type="search" class="form-control" id="sample_1" />
+        </td>
+    </tr>
+</table>
+
+
+<table align="center" class="table" id="sample_1">
+    <thead>
+        <tr>
+            <th align="center">Student Id</th>
+            <th align="center">Student Name</th>
+            <th align="center">Branch Name</th>
+             <th align="center">City Name</th>
+            <th align="center">Email</th>
+            <th align="center">DOB</th>
+            <th align="center">Created</th>
+            <th align="center">Modified</th>
+            <th align="center">Action Method</th>
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+        @{
+            if (Model.Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Rows)
+                {
+                    <tr>
+                        <td>
+                            @dr["StudentId"]
+                        </td>
+                        <td>
+                            @dr["StudentName"]
+                        </td>
+                        <td>
+                            @dr["BranchName"]
+                        </td>
+                        <td>
+                            @dr["CityName"]
+                        </td>
+                        <td>
+                            @dr["Email"]
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["BirthDate"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            <form method="post" asp-controller="MST_Student" asp-action="Student_Delete">
+                                <input type="hidden" name="StudentId" value="@dr["StudentId"]">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return DeletePopUp();">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                                <a class="btn btn-info btn-xs" asp-controller="MST_Student"
+                                   asp-action="AddStudent" asp-route-StudentId="@dr["StudentId"]">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p class="col-form-label">No Record Found</p>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script>
+        function DeletePopUp() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        $(document).ready(function () {
+            $("#sample_1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#sample_2 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

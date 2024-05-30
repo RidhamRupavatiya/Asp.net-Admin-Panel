@@ -1,0 +1,41 @@
+﻿@using DataBaseConnectionMVC.Areas.LOC_Country.Models;
+@{
+    TempData["Title"] = "Country Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model LOC_CountryModel;
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" asp-controller="LOC_Country" asp-action="SaveCountry">
+            @*Here we have taken CountryId as hidden field which will be useful while
+            update a record.*@
+            @Html.HiddenFor(x=>x.CountryId)
+            <div class="form-group">
+                <label>Country Name</label>
+                <input type="text" class="form-control" asp-for="CountryName" placeholder="Enter Coutry Name" />
+                <span asp-validation-for="CountryName" style="color:red"></span>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label>Country Code</label>
+                <input type="text" class="form-control" asp-for="CountryCode" placeholder="Enter Coutry Code" />
+                <span asp-validation-for="CountryCode" style="color:red"></span>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label>Created Date</label>
+                <input type="date" class="form-control" asp-for="Created" />
+                <span asp-validation-for="Created" style="color:red"></span>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label>Modified Date</label>
+                <input type="date" class="form-control" asp-for="Modified" />
+                <span asp-validation-for="Modified" style="color:red"></span>
+            </div>
+            <br/>
+            <input type="submit" value="Save" class="btn btn-success"/>
+            <a class="btn btn-primary" asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="CancleCountry">Cancle</a>
+        </form>
+    </div>
+</div>

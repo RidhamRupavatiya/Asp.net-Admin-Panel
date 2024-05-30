@@ -1,0 +1,91 @@
+﻿@{
+    TempData["Title"] = "City Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using DataBaseConnectionMVC.Areas.LOC_City.Models;
+@model LOC_CityModel;
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" asp-controller="LOC_City" asp-action="SaveCity">
+            @*Here we have taken CityId as hidden field which will be useful while
+            update a record.*@
+            @Html.HiddenFor(x=>x.CityId)
+            <div class="form-group">
+                <label>Country Name</label>
+                @*<input type="text" class="form-control" asp-for="CountryId" placeholder="Enter Country Id" />*@
+                <select class="form-select form-select-lg mb-3" asp-for="CountryId" asp-items="@(new SelectList(ViewBag.CountryList,"CountryId","CountryName"))" onchange="fnOnCountryChange();">
+                    <option>Select Country</option>
+                </select>
+                <span asp-validation-for="CountryId" style="color:red"></span>
+            </div>
+            <div class="form-group">
+                <label>State Name</label>
+                @*<input type="text" class="form-control" asp-for="StateId" placeholder="Enter State Id" />*@
+                <select class="form-select form-select-lg mb-3" asp-for="StateId" asp-items="@(new SelectList(ViewBag.StateList,"StateId","StateName"))">
+                    <option>Select State</option>
+                </select>
+                <span asp-validation-for="StateId" style="color:red"></span>
+            </div>
+            <div class="form-group">
+                <label>City Name</label>
+                <input type="text" class="form-control" asp-for="CityName" placeholder="Enter Coutry Name" />
+                <span asp-validation-for="CityName" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>City Code</label>
+                <input type="text" class="form-control" asp-for="CityCode" placeholder="Enter Coutry Code" />
+                <span asp-validation-for="CityCode" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>Created Date</label>
+                <input type="date" class="form-control" asp-for="Created" />
+                <span asp-validation-for="Created" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>Modified Date</label>
+                <input type="date" class="form-control" asp-for="Modified" />
+                <span asp-validation-for="Modified" style="color:red"></span>
+            </div>
+            <br />
+            <input type="submit" value="Save" class="btn btn-success" />
+            <a class="btn btn-primary" asp-area="LOC_City" asp-controller="LOC_City" asp-action="CancleCity">Cancle</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts{<script>
+        function fnOnCountryChange() {
+            var CountryId = $("#CountryId").val();
+            if (CountryId !== "") {
+                $("#StateId").empty();
+                $("#StateId").append($("<option></option>").val("").html("Select State"));
+                $.ajax(
+                    {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@Url.Action("DropDownByCountry", "LOC_City")" + "?&CountryId=" + CountryId,
+                        data: {},
+                        dataType: "json",
+                        success: function (Result) {
+                            $.each(Result,
+                                function (key, value) {
+                                    $("#StateId").append($("<option></option>").val(value.stateId).html(value.stateName));
+                                });
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            alert("Error while loading combobox.");
+                        }
+                    });
+            } else {
+                $("#StateId").empty();
+                $("#StateId").append($("<option></option>").val("").html("Select State"));
+            }
+        }
+    </script>
+    
+}

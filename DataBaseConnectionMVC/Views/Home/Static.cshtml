@@ -1,0 +1,28 @@
+﻿@model MST_StudentModel;
+@using DataBaseConnectionMVC.Areas.MST_Student.Models;
+
+@using(Html.BeginForm("SaveStudent","MST_Student",FormMethod.Post)){
+
+    @Html.HiddenFor(x=>x.StudentId);
+
+    <div class="form-group">
+        @Html.Label("StudentName")
+        @Html.TextBoxFor(x=>x.StudentName)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Email")
+        @Html.TextBoxFor(x=>x.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("MobileNo")
+        @Html.TextBoxFor(x=>x.MobileNo)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Address")
+        @Html.TextAreaFor(x=>x.Address)
+    </div>
+
+}

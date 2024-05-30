@@ -1,0 +1,134 @@
+﻿@using System.Data;
+@model DataTable;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["CountryInsertMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["CountryInsertMessage"]</div>
+}
+@if (TempData["CountryDelete"] != null)
+{
+    <div class="alert alert-success">@TempData["CountryDelete"]</div>
+}
+
+<form class="row align-items-end g-3 border border-2 rounded p-3 my-4" method="POST" asp-area="LOC_Country" asp-controller="LOC_Country" asp-action="CountryFilter" asp-route-filter="true">
+    <div class="col-12">
+        <h2>Filter</h2>
+        <hr />
+    </div>
+    <div class="col-md">
+        <label for="CountryName" class="form-label">Country Name</label>
+        <input type="text" name="CountryName" class="form-control" id="CountryName" placeholder="e.g. India">
+    </div>
+    <div class="col-md">
+        <label for="CountryCode" class="form-label">Country Code</label>
+        <input type="text" name="CountryCode" class="form-control" id="CountryCode" placeholder="e.g. India">
+    </div>
+    <div class="col-md">
+        <button type="submit" title="Search" class="btn btn-success w-100">Search <i class="bi bi-search"></i></button>
+    </div>
+</form>
+<table>
+    <tr>
+        <td>
+            <a class="btn btn-primary" asp-controller="LOC_Country" asp-action="AddCountry">Add Country</a>
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            Search : &nbsp;
+        </td>
+        <td>
+            <input type="search" class="form-control" id="sample_1" />
+        </td>
+    </tr>
+</table>
+
+
+<table align="center" class="table" id="sample_1">
+    <thead> 
+        <tr>
+            <th align="center">Country ID</th>
+            <th align="center">Country Name</th>
+            <th align="center">Country Code</th>
+            <th align="center">Created</th>
+            <th align="center">Modified</th>
+            <th align="center">Action Method</th>
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+        @{
+            if (Model.Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Rows)
+                {
+                    <tr>
+                        <td>
+                            @dr["CountryID"]
+                        </td>
+                        <td>
+                            @dr["CountryName"]
+                        </td>
+                        <td>
+                            @dr["CountryCode"]
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            <form method="post" asp-controller="LOC_Country" asp-action="Country_Delete">
+                                <input type="hidden" name="CountryId" value="@dr["CountryId"]">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return DeletePopUp();">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                                <a class="btn btn-info btn-xs" asp-controller="LOC_Country"
+                                   asp-action="AddCountry" asp-route-CountryId="@dr["CountryId"]">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p class="col-form-label">No Record Found</p>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts
+    {
+    <script>
+        function DeletePopUp() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        $(document).ready(function(){
+            $("#sample_1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#sample_2 tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

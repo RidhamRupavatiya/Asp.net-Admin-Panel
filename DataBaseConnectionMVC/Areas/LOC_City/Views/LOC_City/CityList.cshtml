@@ -1,0 +1,145 @@
+﻿@using System.Data;
+@model DataTable
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    @if (TempData["CityInsertMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["CityInsertMessage"]</div>
+    }
+    @if (TempData["CityDelete"] != null)
+    {
+        <div class="alert alert-success">@TempData["CityDelete"]</div>
+    }
+
+<form class="row align-items-end g-3 border border-2 rounded p-3 my-4" method="POST" asp-area="LOC_City" asp-controller="LOC_City" asp-action="CityList" asp-route-filter="true">
+    <div class="col-12">
+        <h2>Filter</h2>
+        <hr />
+    </div>
+    <div class="col-md">
+        <label for="CityName" class="form-label">City Name</label>
+        <input type="text" name="CityName" class="form-control" id="CityName" placeholder="e.g. Rajkot">
+    </div>
+    <div class="col-md">
+        <label for="CityCode" class="form-label">City Code</label>
+        <input type="text" name="CityCode" class="form-control" id="CityCode" placeholder="e.g. Rjk">
+    </div>
+    <div class="col-md">
+        <label for="CountryId" class="form-label">Country Id</label>
+        <input type="text" name="CountryId" class="form-control" id="CountryId" placeholder="e.g. 1">
+    </div>
+    <div class="col-md">
+        <label for="StateId" class="form-label">State Id</label>
+        <input type="text" name="StateId" class="form-control" id="StateId" placeholder="e.g. 1">
+    </div>
+    <div class="col-md">
+        <button type="submit" title="Search" class="btn btn-success w-100">Search <i class="bi bi-search"></i></button>
+    </div>
+</form>
+<table>
+    <tr>
+        <td>
+            <a class="btn btn-primary" asp-controller="LOC_City" asp-action="AddCity">Add City</a>
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            Search : &nbsp;
+        </td>
+        <td>
+            <input type="search" class="form-control" id="sample_1" />
+        </td>
+    </tr>
+</table>
+<table class="table" align="center" id="sample_1">
+    <thead>
+        <tr>
+            <th align="center">City Id</th>
+            <th align="center">Country Name</th>
+            <th align="center">StateName</th>
+            <th align="center">City Name</th>
+            <th align="center">City Code</th>
+            <th align="center">Created</th>
+            <th align="center">Modified</th>
+            <th align="center">Action Method</th>
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+        @{
+            if (Model.Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Rows)
+                {
+                    <tr>
+                        <td>
+                            @dr["CityId"]
+                        </td>
+                        <td>
+                            @dr["CountryName"]
+                        </td>
+                         <td>
+                            @dr["StateName"]
+                        </td>
+                        <td>
+                            @dr["CityName"]
+                        </td>
+                        <td>
+                            @dr["CityCode"]
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            <form method="post" asp-controller="LOC_City" asp-action="City_Delete">
+                                <input type="hidden" name="CityId" value="@dr["CityId"]">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return DeletePopUp();">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                                <a class="btn btn-info btn-xs" asp-controller="LOC_City"
+                                   asp-action="AddCity" asp-route-CityId="@dr["CityId"]">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p class="col-form-label">No Record Found</p>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts
+    {
+    <script>
+        function DeletePopUp() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        $(document).ready(function () {
+            $("#sample_1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#sample_2 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

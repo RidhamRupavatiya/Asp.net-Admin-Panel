@@ -1,0 +1,41 @@
+﻿@using DataBaseConnectionMVC.Areas.MST_Branch.Models;
+@{
+    TempData["Title"] = "Branch Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model MST_BranchModel;
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" asp-controller="MST_Branch" asp-action="SaveBranch">
+            @*Here we have taken BranchId as hidden field which will be useful while
+            update a record.*@
+            @Html.HiddenFor(x=>x.BranchId)
+            <div class="form-group">
+                <label>Branch Name</label>
+                <input type="text" class="form-control" asp-for="BranchName" placeholder="Enter Coutry Name" />
+                <span asp-validation-for="BranchName" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>Branch Code</label>
+                <input type="text" class="form-control" asp-for="BranchCode" placeholder="Enter Coutry Code" />
+                <span asp-validation-for="BranchCode" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>Created Date</label>
+                <input type="date" class="form-control" asp-for="Created" />
+                <span asp-validation-for="Created" style="color:red"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label>Modified Date</label>
+                <input type="date" class="form-control" asp-for="Modified" />
+                <span asp-validation-for="Modified" style="color:red"></span>
+            </div>
+            <br />
+            <input type="submit" value="Save" class="btn btn-success" />
+            <a class="btn btn-primary" asp-area="MST_Branch" asp-controller="MST_Branch" asp-action="CancleBranch">Cancle</a>
+        </form>
+    </div>
+</div>

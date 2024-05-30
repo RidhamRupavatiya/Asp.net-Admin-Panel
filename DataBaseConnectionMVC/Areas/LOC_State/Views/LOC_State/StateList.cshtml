@@ -1,0 +1,130 @@
+﻿@using System.Data;
+@model DataTable;
+@using DataBaseConnectionMVC.Areas.LOC_State.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+        @if (TempData["StateInsertMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["StateInsertMessage"]</div>
+        }
+        @if (TempData["StateDelete"] != null)
+        {
+            <div class="alert alert-success">@TempData["StateDelete"]</div>
+        }
+
+<form class="row align-items-end g-3 border border-2 rounded p-3 my-4" method="POST" asp-area="LOC_State" asp-controller="LOC_State" asp-action="StateList" asp-route-filter="true">
+    <div class="col-12">
+        <h2>Filter</h2>
+        <hr />
+    </div>
+    <div class="col-md">
+        <label for="StateName" class="form-label">State Name</label>
+        <input type="text" name="StateName" class="form-control" id="StateName" placeholder="e.g. Gujarat">
+    </div>
+    <div class="col-md">
+        <label for="StateCode" class="form-label">State Code</label>
+        <input type="text" name="StateCode" class="form-control" id="StateCode" placeholder="e.g. Guj">
+    </div>
+    <div class="col-md">
+        <label for="CountryId" class="form-label">Country Id</label>
+        <input type="text" name="CountryId" class="form-control" id="CountryId" placeholder="e.g. 1">
+    </div>
+    <div class="col-md">
+        <button type="submit" title="Search" class="btn btn-success w-100">Search <i class="bi bi-search"></i></button>
+    </div>
+</form>
+    <table>
+        <tr>
+            <td>
+                <a class="btn btn-primary" asp-controller="LOC_State" asp-action="AddState">Add State</a>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                Search : &nbsp;
+            </td>
+            <td>
+                <input type="search" class="form-control" id="sample_1" />
+            </td>
+        </tr>
+    </table>
+<table class="table" id="sample_1">
+    <thead>
+        <tr>
+            <th>StateId</th>
+            <th>CountryName</th>
+            <th>StateName</th>
+            <th>StateCode</th>
+            <th>Created</th>
+            <th>Modified</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="sample_2">
+        @{
+            if (Model.Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Rows)
+                {
+                    <tr>
+                        <td>@dr["StateId"]</td>
+                        <td>@dr["CountryName"]</td>
+                        <td>@dr["StateName"]</td>
+                        <td>@dr["StateCode"]</td>
+                        <td>
+                            @Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy")
+                        </td>
+                        <td>
+                            <form method="post" asp-controller="LOC_State" asp-action="State_Delete">
+                                <input type="hidden" name="StateId" value="@dr["StateId"]">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return DeletePopUp();">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                                <a class="btn btn-info btn-xs" asp-controller="LOC_State"
+                                   asp-action="AddState" asp-route-StateId="@dr["StateId"]">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p class="col-form-label">No Record Found</p>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts
+    {
+    <script>
+        function DeletePopUp() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        $(document).ready(function () {
+            $("#sample_1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#sample_2 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
